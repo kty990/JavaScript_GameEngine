@@ -36,6 +36,10 @@ class Color {
     constructor(r, g, b, a = 1) {
         this.r, this.g, this.b, this.alpha = r, g, b, a;
     }
+
+    deconstruct() {
+        return [this.r, this.g, this.b, this.alpha];
+    }
 }
 
 class HexColor extends Color {
@@ -52,7 +56,13 @@ async function loadPixelsFromImg(url) {
             .then(blob => {
                 const img = new Image();
                 img.onload = function () {
-                    resolve(loadPixelsFromImage(img));
+                    const justify = (r) => {
+                        let fixed_arr = [];
+                        for (let i = 0; i < r.length; i += 4) {
+                            fixed_arr.push(new Color((r[i]), (r[i + 1]), (r[i + 2]), (r[i + 3])));
+                        }
+                    }
+                    resolve(justify(loadPixelsFromImage(img)));
                 };
                 img.onerror = reject;
                 img.src = URL.createObjectURL(blob);
@@ -119,6 +129,43 @@ function toPixelArray(width, height, arr) {
         cArr = [];
     }
     return tmp;
+}
+
+function drawCone(radiusDegrees, height, rotationDegrees, color = new HexColor("#cccccccc"), x = 0, y = 0) {
+    if (radiusDegrees < 0 || radiusDegrees > 360) {
+        console.log("Invalid radius value. Please enter a value between 0 and 360.");
+        return;
+    }
+
+    const centerX = x;
+    const centerY = y;
+
+    const coneHeight = height;
+    const radius = Math.tan((radiusDegrees / 2) * (Math.PI / 180));
+    const rotation = rotationDegrees * (Math.PI / 180); // Convert to radians
+
+    for (let y = 0; y < coneHeight; y++) {
+        const row = [];
+        const lineWidth = Math.floor(y / coneHeight * radius * 2);
+        const startX = Math.floor(centerX - lineWidth / 2);
+
+        for (let x = 0; x < canvas.width; x++) {
+            if (x >= startX && x < startX + lineWidth) {
+                row.push(1); // 1 represents a pixel
+            } else {
+                row.push(0); // 0 represents an empty space
+            }
+        }
+
+        context.fillStyle = color;
+        for (let x = 0; x < canvas.width; x++) {
+            if (row[x] === 1) {
+                const rotatedX = Math.cos(rotation) * (x - centerX) - Math.sin(rotation) * (centerY - y);
+                const rotatedY = Math.sin(rotation) * (x - centerX) + Math.cos(rotation) * (centerY - y);
+                context.fillRect(centerX + rotatedX, centerY - rotatedY, 1, 1);
+            }
+        }
+    }
 }
 
 export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray }

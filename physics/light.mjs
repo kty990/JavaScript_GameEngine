@@ -1,4 +1,5 @@
 import * as util from './util';
+import * as entity from './entity';
 
 class LightSource {
 
@@ -8,14 +9,30 @@ class LightSource {
      */
     constructor(map, x = 0, y = 0) {
         this.map = map;
-        this.defaultPixels = map.pixels;
         this.emit = true;
         this.radius = 5; // degrees
+        this.direction = 90; // up (deg)
         this.distance = 0;
         this.ignoreSolids = false;
         this.intensity = 100; // percentage
         this.color = new util.HexColor('#cccccccc');
         this.position = new util.Vector2i(x, y, 0, 0);
+        this.drawEntity = new entity.Entity();
+        this.drawEntity.solid = false;
+        this.drawEntity.visible = false;
+    }
+
+    /**
+     * 
+     * @param {_2DArray<number>} lightmap 
+     */
+    modifyMap(lightmap) {
+        if (!this.emit) return;
+        if (this.ignoreSolids) {
+
+        } else {
+
+        }
     }
 }
 
@@ -34,9 +51,19 @@ class Lighting {
         this.lights.push(light);
     }
 
-    generateMap(x, y, zoom = 1) {
-        let tmp = this.map.pixels;
-        let lights = this.getLightsInRadiusOfPos()
+    generateMap(x, y) {
+        let tmp = [];
+        for (let y = 0; y < this.game.canvas.height; y++) {
+            let t = [];
+            for (let x = 0; x < this.game.canvas.width; x++) {
+                t.push(0);
+            }
+            tmp.push(t);
+        }
+        let lights = this.getLightsInRadiusOfPos(x, y, this.game.canvas.width * this.game.zoom);
+        lights.forEach((light, i, arr) => {
+            light.modifyMap(tmp);
+        })
     }
 
     // Function to get the light at a specific coordinate

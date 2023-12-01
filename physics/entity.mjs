@@ -128,8 +128,20 @@ class Entity {
         this.position.set(x, y);
     }
 
+    update() {
+
+    }
+
     render(GAME) {
-        // Set pixels
+        if (!this.visible) return;
+        for (let y = 0; y < this.pixels.length; y++) {
+            for (let x = 0; x < this.pixels[0].length; x++) {
+                if (this.pixels[y][x].alpha == 0) {
+                    continue;
+                }
+                GAME.pixels[y][x] = this.pixels[y][x];
+            }
+        }
     }
 }
 

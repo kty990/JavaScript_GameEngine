@@ -28,6 +28,22 @@ class Game {
         this.map = null;
         this.pixels = [];
         this.entities = [];
+
+        this.init();
+    }
+
+    async init() {
+        let x = 0;
+        setInterval(() => {
+            x++;
+            if (x % 3 == 0) {
+                this.render();
+            }
+            this.update();
+            if (x > 999) {
+                x = 0;
+            }
+        }, 100);
     }
 
     /**
@@ -47,8 +63,11 @@ class Game {
         if (this.map) {
             this.map.render(this);
         }
-        // SHOW
-        this.ctx.putImageData(this.pixels, 0, 0);
+        this.ctx.putImageData(this.pixels.map(color => color.deconstruct()), 0, 0);
+    }
+
+    update() {
+        this.entities.forEach(e => e.update());
     }
 
     addEntity(e) {
@@ -91,10 +110,22 @@ class GameMap {
             }
         }
         this.lighting = new light.Lighting(this);
+        this.zoom = 1;
+        this.game.canvas.width = `${1920 * this.zoom}px`;
+        this.game.canvas.height = `${1080 * this.zoom}px`;
+    }
+
+    update() {
+        this.game.canvas.width = `${1920 * this.zoom}px`;
+        this.game.canvas.height = `${1080 * this.zoom}px`;
     }
 
     render() {
-        //
+        for (let y = 0; y < this.pixels.length; y++) {
+            for (let x = 0; x < this.pixels[0].length; x++) {
+                this.game.pixels[y + this.dy][x + this.dx] = this.pixels[y + this.dy][x] + this.dx;
+            }
+        }
     }
 }
 
