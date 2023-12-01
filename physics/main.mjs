@@ -1,3 +1,9 @@
+/**
+* Incorrect terminology used. Acceleration is really
+* velocity.
+*/
+
+
 import * as light from './light';
 import * as particle from './particle';
 import * as entity from './entity';
@@ -59,7 +65,7 @@ class Game {
      */
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.entities.forEach(e => e.render(this));
+        this.entities.forEach(e => e.render());
         if (this.map) {
             this.map.render(this);
         }
@@ -68,6 +74,9 @@ class Game {
 
     update() {
         this.entities.forEach(e => e.update());
+        //function applyLightArrays(pixels, xArray, yArray, lightArrays) {
+        let 
+        util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x),this.map.lighting.map(L => L.position.y),LightArr)
     }
 
     addEntity(e) {

@@ -23,18 +23,38 @@ class LightSource {
         this.game = game;
     }
 
-    /**
-     * 
-     * @param {_2DArray<number>} lightmap 
-     */
-    modifyMap(lightmap) {
+
+    getLightmap() {
         if (!this.emit) return;
+        let map, solidPixels;
         if (this.ignoreSolids) {
-            util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
+            map = util.generateLightArray(this.radius, this.height);
         } else {
             // More needed here, should return not set
-            util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
+            solidPixels = this.getSolidObstacles();
+            map = util.generateLightArray(this.radius, this.height);
+
+            //util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
         }
+        return { lightmap: map, points: solidPixels, solids: this.ignoreSolids };
+    }
+
+    getSolidObstacles() {
+        let entities = this.game.entities.filter(e => e.solid == true && e.distanceTo(this.position) <= this.distance);
+        let shadow = [];
+        let xClamp = Math.min(Math.max(this.position.x, 0), POSITION);
+        let yClamp = Math.min(Math.max(this.position.y, 0), POSITION);
+        for (let x = xClamp; x < xClamp + distance; x++) {
+            for (let y = yClamp; y < yClamp + distance; y++) {
+                if (this.map.boundary[y][x].alpha != 0) {
+                    shadow.push(new util.Point(x, y));
+                }
+            }
+        }
+        for (let e of entities) {
+            shadow.push(new util.Point(e.position.x, e.position.y));
+        }
+        return shadow;
     }
 }
 

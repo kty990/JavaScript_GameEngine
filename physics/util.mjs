@@ -51,23 +51,23 @@ class HexColor extends Color {
 
 async function loadPixelsFromImg(url) {
     return new Promise(async (resolve, reject) => {
-        await fetch(url)
-            .then(response => response.blob())
-            .then(blob => {
-                const img = new Image();
-                img.onload = function () {
-                    const justify = (r) => {
-                        let fixed_arr = [];
-                        for (let i = 0; i < r.length; i += 4) {
-                            fixed_arr.push(new Color((r[i]), (r[i + 1]), (r[i + 2]), (r[i + 3])));
-                        }
-                    }
-                    resolve(justify(loadPixelsFromImage(img)));
-                };
-                img.onerror = reject;
-                img.src = URL.createObjectURL(blob);
-            });
-    })
+                       await fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+        const img = new Image();
+        img.onload = function () {
+            const justify = (r) => {
+                let fixed_arr = [];
+            for (let i = 0; i < r.length; i += 4) {
+                fixed_arr.push(new Color((r[i]), (r[i + 1]), (r[i + 2]), (r[i + 3])));
+            }
+        }
+        resolve(justify(loadPixelsFromImage(img)));
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(blob);
+});
+})
 }
 
 function loadPixelsFromImage(img) {
@@ -131,6 +131,9 @@ function toPixelArray(width, height, arr) {
     return tmp;
 }
 
+/**
+ Old version of function
+    */
 function drawCone(GAME, radiusDegrees, height, rotationDegrees, color = new HexColor("#cccccccc"), x = 0, y = 0) {
     if (radiusDegrees < 0 || radiusDegrees > 360) {
         console.log("Invalid radius value. Please enter a value between 0 and 360.");
@@ -168,4 +171,68 @@ function drawCone(GAME, radiusDegrees, height, rotationDegrees, color = new HexC
     }
 }
 
-export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, drawCone }
+function generateLightArray(radiusDegrees, height) {
+    if (radiusDegrees < 0 || radiusDegrees > 360) {
+        console.log("Invalid radius value. Please enter a value between 0 and 360.");
+        return null;
+    }
+
+    const lightArray = [];
+
+    const coneHeight = height;
+    const radius = Math.tan((radiusDegrees / 2) * (Math.PI / 180));
+
+    for (let y = 0; y < coneHeight; y++) {
+        const row = [];
+        const lineWidth = Math.floor(y / coneHeight * radius * 2);
+
+        for (let x = 0; x < lineWidth; x++) {
+            // Normalize the light level between 0 and 1 based on x position in the row
+            const lightLevel = x / lineWidth;
+            row.push(lightLevel);
+        }
+
+        lightArray.push(row);
+    }
+
+    return lightArray;
+}
+
+function applyLightArrays(pixels, xArray, yArray, lightArrays) {
+    assert(!Array.isArray(xArray) ||
+        !Array.isArray(yArray) ||
+        !Array.isArray(lightArrays) ||
+        xArray.length !== yArray.length ||
+        xArray.length !== lightArrays.length ||
+        lightArrays.length === ,
+            "Invalid input arrays");
+
+    const maxY = pixels.length;
+    const maxX = maxY > 0 ? pixels[0].length : 0;
+
+    for (let i = 0; i < xArray.length; i++) {
+        const x = Math.floor(xArray[i]);
+        const y = Math.floor(yArray[i]);
+
+        if (x >= 0 && x < maxX && y >= 0 && y < maxY) {
+            const lightArray = lightArrays[i];
+            const row = pixels[y];
+
+            for (let j = 0; j < lightArray.length; j++) {
+                const lightLevel = lightArray[j];
+                const pixelX = x - Math.floor(lightArray.length / 2) + j;
+
+                if (pixelX >= 0 && pixelX < maxX) {
+                    //row[pixelX] += lightLevel;
+                    //row[pixelX] = Math.min(1, Math.max(0, row[pixelX]));
+
+                    row[pixelX] *= lightLevel * 100;
+                    row[pixelX] = Math.min(1, Math.max(0, row[pixelX]));
+                }
+            }
+        }
+    }
+}
+
+
+export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, drawCone, generateLightArray, applyLightArrays }
