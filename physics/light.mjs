@@ -30,9 +30,9 @@ class LightSource {
     modifyMap(lightmap) {
         if (!this.emit) return;
         if (this.ignoreSolids) {
-            // More needed here
             util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
         } else {
+            // More needed here, should return not set
             util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
         }
     }
