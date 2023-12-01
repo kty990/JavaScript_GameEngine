@@ -131,7 +131,7 @@ function toPixelArray(width, height, arr) {
     return tmp;
 }
 
-function drawCone(radiusDegrees, height, rotationDegrees, color = new HexColor("#cccccccc"), x = 0, y = 0) {
+function drawCone(GAME, radiusDegrees, height, rotationDegrees, color = new HexColor("#cccccccc"), x = 0, y = 0) {
     if (radiusDegrees < 0 || radiusDegrees > 360) {
         console.log("Invalid radius value. Please enter a value between 0 and 360.");
         return;
@@ -149,7 +149,7 @@ function drawCone(radiusDegrees, height, rotationDegrees, color = new HexColor("
         const lineWidth = Math.floor(y / coneHeight * radius * 2);
         const startX = Math.floor(centerX - lineWidth / 2);
 
-        for (let x = 0; x < canvas.width; x++) {
+        for (let x = 0; x < GAME.canvas.width; x++) {
             if (x >= startX && x < startX + lineWidth) {
                 row.push(1); // 1 represents a pixel
             } else {
@@ -157,15 +157,15 @@ function drawCone(radiusDegrees, height, rotationDegrees, color = new HexColor("
             }
         }
 
-        context.fillStyle = color;
-        for (let x = 0; x < canvas.width; x++) {
+        GAME.ctx.fillStyle = color;
+        for (let x = 0; x < GAME.canvas.width; x++) {
             if (row[x] === 1) {
                 const rotatedX = Math.cos(rotation) * (x - centerX) - Math.sin(rotation) * (centerY - y);
                 const rotatedY = Math.sin(rotation) * (x - centerX) + Math.cos(rotation) * (centerY - y);
-                context.fillRect(centerX + rotatedX, centerY - rotatedY, 1, 1);
+                GAME.ctx.fillRect(centerX + rotatedX, centerY - rotatedY, 1, 1);
             }
         }
     }
 }
 
-export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray }
+export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, drawCone }

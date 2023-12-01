@@ -7,7 +7,7 @@ class LightSource {
      * 
      * @param {GameMap} map 
      */
-    constructor(map, x = 0, y = 0) {
+    constructor(map, x = 0, y = 0, game) {
         this.map = map;
         this.emit = true;
         this.radius = 5; // degrees
@@ -20,6 +20,7 @@ class LightSource {
         this.drawEntity = new entity.Entity();
         this.drawEntity.solid = false;
         this.drawEntity.visible = false;
+        this.game = game;
     }
 
     /**
@@ -29,9 +30,10 @@ class LightSource {
     modifyMap(lightmap) {
         if (!this.emit) return;
         if (this.ignoreSolids) {
-
+            // More needed here
+            util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
         } else {
-
+            util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
         }
     }
 }
@@ -46,7 +48,7 @@ class Lighting {
     // Function to add a light to the dictionary
     addLight(x, y, hexColor, alpha = 1) {
         let rgbaColor = hexToRgba(hexColor, alpha);
-        let light = new LightSource(this.map, x, y);
+        let light = new LightSource(this.map, x, y, this.game);
         light.color = rgbaColor;
         this.lights.push(light);
     }
