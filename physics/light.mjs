@@ -28,13 +28,10 @@ class LightSource {
         if (!this.emit) return;
         let map, solidPixels;
         if (this.ignoreSolids) {
-            map = util.generateLightArray(this.radius, this.height);
+            map = util.generateLightArray(this.radius, this.height, this.direction);
         } else {
-            // More needed here, should return not set
             solidPixels = this.getSolidObstacles();
-            map = util.generateLightArray(this.radius, this.height);
-
-            //util.drawCone(this.game, this.radius, this.distance, this.direction, this.color, this.position.x, this.position.y);
+            map = util.generateLightArray(this.radius, this.height, this.direction);
         }
         return { lightmap: map, points: solidPixels, solids: this.ignoreSolids };
     }

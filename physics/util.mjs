@@ -34,7 +34,11 @@ class Vector2i {
 
 class Color {
     constructor(r, g, b, a = 1) {
-        this.r, this.g, this.b, this.alpha = r, g, b, a;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.alpha = a;
+
     }
 
     deconstruct() {
@@ -51,23 +55,24 @@ class HexColor extends Color {
 
 async function loadPixelsFromImg(url) {
     return new Promise(async (resolve, reject) => {
-                       await fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-        const img = new Image();
-        img.onload = function () {
-            const justify = (r) => {
-                let fixed_arr = [];
-            for (let i = 0; i < r.length; i += 4) {
-                fixed_arr.push(new Color((r[i]), (r[i + 1]), (r[i + 2]), (r[i + 3])));
-            }
-        }
-        resolve(justify(loadPixelsFromImage(img)));
-    };
-    img.onerror = reject;
-    img.src = URL.createObjectURL(blob);
-});
-})
+        await fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const img = new Image();
+                img.onload = function () {
+                    const justify = (r) => {
+                        let fixed_arr = [];
+                        for (let i = 0; i < r.length; i += 4) {
+                            fixed_arr.push(new Color((r[i]), (r[i + 1]), (r[i + 2]), (r[i + 3])));
+                        }
+                        return fixed_arr;
+                    }
+                    resolve(justify(loadPixelsFromImage(img)));
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(blob);
+            });
+    })
 }
 
 function loadPixelsFromImage(img) {
@@ -131,47 +136,7 @@ function toPixelArray(width, height, arr) {
     return tmp;
 }
 
-/**
- Old version of function
-    */
-function drawCone(GAME, radiusDegrees, height, rotationDegrees, color = new HexColor("#cccccccc"), x = 0, y = 0) {
-    if (radiusDegrees < 0 || radiusDegrees > 360) {
-        console.log("Invalid radius value. Please enter a value between 0 and 360.");
-        return;
-    }
-
-    const centerX = x;
-    const centerY = y;
-
-    const coneHeight = height;
-    const radius = Math.tan((radiusDegrees / 2) * (Math.PI / 180));
-    const rotation = rotationDegrees * (Math.PI / 180); // Convert to radians
-
-    for (let y = 0; y < coneHeight; y++) {
-        const row = [];
-        const lineWidth = Math.floor(y / coneHeight * radius * 2);
-        const startX = Math.floor(centerX - lineWidth / 2);
-
-        for (let x = 0; x < GAME.canvas.width; x++) {
-            if (x >= startX && x < startX + lineWidth) {
-                row.push(1); // 1 represents a pixel
-            } else {
-                row.push(0); // 0 represents an empty space
-            }
-        }
-
-        GAME.ctx.fillStyle = color;
-        for (let x = 0; x < GAME.canvas.width; x++) {
-            if (row[x] === 1) {
-                const rotatedX = Math.cos(rotation) * (x - centerX) - Math.sin(rotation) * (centerY - y);
-                const rotatedY = Math.sin(rotation) * (x - centerX) + Math.cos(rotation) * (centerY - y);
-                GAME.ctx.fillRect(centerX + rotatedX, centerY - rotatedY, 1, 1);
-            }
-        }
-    }
-}
-
-function generateLightArray(radiusDegrees, height) {
+function generateLightArray(radiusDegrees, height, direction) {
     if (radiusDegrees < 0 || radiusDegrees > 360) {
         console.log("Invalid radius value. Please enter a value between 0 and 360.");
         return null;
@@ -189,6 +154,10 @@ function generateLightArray(radiusDegrees, height) {
         for (let x = 0; x < lineWidth; x++) {
             // Normalize the light level between 0 and 1 based on x position in the row
             const lightLevel = x / lineWidth;
+
+            // Adjust x position based on the direction
+            const adjustedX = adjustXPosition(x, lineWidth, direction);
+
             row.push(lightLevel);
         }
 
@@ -198,14 +167,30 @@ function generateLightArray(radiusDegrees, height) {
     return lightArray;
 }
 
+// Function to adjust x position based on the direction
+function adjustXPosition(x, lineWidth, direction) {
+    // Calculate the adjusted x position based on the direction
+    const adjustedX = x - lineWidth / 2;
+    const angle = (direction + 90) * (Math.PI / 180); // Convert to radians and adjust for 0/360 being top
+
+    // Rotate the adjusted x position based on the direction
+    const rotatedX = adjustedX * Math.cos(angle);
+
+    // Shift the x position back to the original center
+    const finalX = rotatedX + lineWidth / 2;
+
+    return finalX;
+}
+
+
 function applyLightArrays(pixels, xArray, yArray, lightArrays) {
     assert(!Array.isArray(xArray) ||
         !Array.isArray(yArray) ||
         !Array.isArray(lightArrays) ||
         xArray.length !== yArray.length ||
         xArray.length !== lightArrays.length ||
-        lightArrays.length === ,
-            "Invalid input arrays");
+        lightArrays.length === 0,
+        "Invalid input arrays");
 
     const maxY = pixels.length;
     const maxX = maxY > 0 ? pixels[0].length : 0;
