@@ -10,7 +10,8 @@ class LightSource {
         this.map = map;
         this.defaultPixels = map.pixels;
         this.emit = true;
-        this.radius = 5;
+        this.radius = 5; // degrees
+        this.distance = 0;
         this.ignoreSolids = false;
         this.intensity = 100; // percentage
         this.color = new util.HexColor('#cccccccc');
@@ -19,9 +20,10 @@ class LightSource {
 }
 
 class Lighting {
-    constructor(map) {
+    constructor(GAME, map) {
         this.lights = [];
         this.map = map;
+        this.game = GAME;
     }
 
     // Function to add a light to the dictionary
@@ -30,6 +32,11 @@ class Lighting {
         let light = new LightSource(this.map, x, y);
         light.color = rgbaColor;
         this.lights.push(light);
+    }
+
+    generateMap(x, y, zoom = 1) {
+        let tmp = this.map.pixels;
+        let lights = this.getLightsInRadiusOfPos()
     }
 
     // Function to get the light at a specific coordinate

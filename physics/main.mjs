@@ -72,7 +72,7 @@ class GameMap {
      * 
      * The map boundary is a true/false for whether there are pixels in a given location.
      */
-    constructor(dx = 0, dy = 0, MapBoundaryFilepath = "", filepath = "", pixels = []) {
+    constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepath = "", filepath = "", pixels = []) {
         assert(filepath == "" && pixels == [], `GameMap requires either a filepath or pixel array. No map data provided`);
         assert(MapBoundaryFilepath instanceof string && MapBoundaryFilepath.length > 0, 'Requires map boundary file.');
         if (filepath) {
@@ -83,6 +83,7 @@ class GameMap {
             this.pixels = toPixelArray(loadPixelsFromImg(filepath));
 
         }
+        this.game = GAME;
         this.boundary = toPixelArray(loadPixelsFromImg(MapBoundaryFilepath));
         if (pixels instanceof Array) {
             if (pixels.length > 0) {
