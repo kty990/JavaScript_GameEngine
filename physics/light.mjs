@@ -58,6 +58,7 @@ class Lighting {
         this.lights = [];
         this.map = map;
         this.game = GAME;
+        this.currentLightMap = [];
     }
 
     // Function to add a light to the dictionary
@@ -88,6 +89,7 @@ class Lighting {
                 // Calculations
             }
         })
+        return tmp;
     }
 
     // Function to get the light at a specific coordinate

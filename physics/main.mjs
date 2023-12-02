@@ -8,6 +8,7 @@ import * as light from './light';
 import * as particle from './particle';
 import * as entity from './entity';
 import { assert, Vector2i, loadPixelsFromImg, toPixelArray } from './util'
+import * as controls from '../user/controls';
 
 const ControlTypes = {
     Keyboard: 0,
@@ -34,6 +35,7 @@ class Game {
         this.map = null;
         this.pixels = [];
         this.entities = [];
+        this.cameraPosition = new util.Point(0, 0);
 
         this.init();
     }
@@ -75,8 +77,7 @@ class Game {
     update() {
         this.entities.forEach(e => e.update());
         //function applyLightArrays(pixels, xArray, yArray, lightArrays) {
-        let 
-        util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x),this.map.lighting.map(L => L.position.y),LightArr)
+        util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x), this.map.lighting.map(L => L.position.y), this.map.lighting.generateMap(this.cameraPosition.x, this.cameraPosition.y))
     }
 
     addEntity(e) {
@@ -142,7 +143,16 @@ class Player extends entity.Entity {
     constructor(controlType = ControlTypes.Keyboard) {
         super();
         this.controlType = controlType;
+        switch (this.controlType) {
+            case ControlTypes.Keyboard:
+                this.controller = new controls.Keyboard();
+                break;
+            case ControlTypes.Touch:
+                this.controller = new controls.Mouse();
+            default:
+                throw 'Invalid control type.\n\tValid types:\n\t\t- Keyboard\n\t\tTouch\t(Mouse)';
+        }
     }
 }
 
-export { Game, GameMap, Player, entity, particle, light, MoveTypes, ControlTypes };
+export { Game, GameMap, Player, controls, entity, particle, light, MoveTypes, ControlTypes };

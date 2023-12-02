@@ -18,6 +18,14 @@ class Point {
     }
 }
 
+class Path {
+    constructor(points = []) {
+        assert(!(points instanceof Array), `Path constructor requires points argument of type Array, got ${typeof points}`);
+        this.points = points;
+        this.index = 0;
+    }
+}
+
 class Vector2i {
     constructor(x = 0, y = 0) {
         this.x = x;
@@ -51,7 +59,6 @@ class HexColor extends Color {
         super(Object.values(hexToRgba(hex)));
     }
 }
-
 
 async function loadPixelsFromImg(url) {
     return new Promise(async (resolve, reject) => {
@@ -182,7 +189,6 @@ function adjustXPosition(x, lineWidth, direction) {
     return finalX;
 }
 
-
 function applyLightArrays(pixels, xArray, yArray, lightArrays) {
     assert(!Array.isArray(xArray) ||
         !Array.isArray(yArray) ||
@@ -211,13 +217,13 @@ function applyLightArrays(pixels, xArray, yArray, lightArrays) {
                     //row[pixelX] += lightLevel;
                     //row[pixelX] = Math.min(1, Math.max(0, row[pixelX]));
 
-                    row[pixelX] *= lightLevel * 100;
+                    row[pixelX] *= lightLevel;
                     row[pixelX] = Math.min(1, Math.max(0, row[pixelX]));
                 }
             }
         }
     }
+    return pixels;
 }
 
-
-export { Point, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, drawCone, generateLightArray, applyLightArrays }
+export { Point, Path, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, generateLightArray, applyLightArrays }

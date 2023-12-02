@@ -2,6 +2,7 @@ import * as util from './util';
 
 class Entity {
     id = 0;
+    deathEvents = {};
 
     /**
      * @param {Game} GAME
@@ -58,7 +59,7 @@ class Entity {
          * @param {function} c 
          */
     onDeath(c) {
-        entities[this.id].push(c);
+        Entity.deathEvents[this.id].push(c);
     }
 
     /**
@@ -114,9 +115,9 @@ class Entity {
          * @param {number} ya 
          * @param {number} timelimit | -1 = inifinity, ms
          */
-    applyAcceleration(v2i = new Vector2i(), timelimit = -1) {
-        this.xa = v2i.xa;
-        this.ya = v2i.ya;
+    applyVelocity(xa, ya, timelimit = -1) {
+        this.xa = xa;
+        this.ya = ya;
         if (timelimit !== -1) {
             setTimeout(() => {
                 this.xa -= xa;
@@ -132,7 +133,11 @@ class Entity {
     }
 
     update() {
-
+        if (this.health <= 0) {
+            Entity.deathEvents[this.id].forEach(cb => {
+                cb();
+            })
+        }
     }
 
     render() {
