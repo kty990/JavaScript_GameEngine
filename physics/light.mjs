@@ -26,12 +26,9 @@ class LightSource {
 
     getLightmap() {
         if (!this.emit) return;
-        let map, solidPixels;
-        if (this.ignoreSolids) {
-            map = util.generateLightArray(this.radius, this.height, this.direction);
-        } else {
+        let map = util.generateLightArray(this.radius, this.height, this.direction), solidPixels;
+        if (!this.ignoreSolids) {
             solidPixels = this.getSolidObstacles();
-            map = util.generateLightArray(this.radius, this.height, this.direction);
         }
         return { lightmap: map, points: solidPixels, solids: this.ignoreSolids };
     }
@@ -48,10 +45,11 @@ class LightSource {
                 }
             }
         }
+        let _e = [];
         for (let e of entities) {
-            shadow.push(new util.Point(e.position.x, e.position.y));
+            _e.push({ min: new util.Point(e.position.x, e.position.y), max: new util.Point(e.position.x + e.width, e.position.y + e.height) });
         }
-        return shadow;
+        return { boundary: shadow, entity: _e };
     }
 }
 
@@ -81,7 +79,14 @@ class Lighting {
         }
         let lights = this.getLightsInRadiusOfPos(x, y, this.game.canvas.width * this.game.zoom);
         lights.forEach((light, i, arr) => {
-            light.modifyMap(tmp);
+            let smlMap = light.getLightmap();
+            if (!smlMap.solids) {
+                // If not ignore solids
+                let data = smlMap.points;
+                let boundary = data.boundary;
+                let entities = data.entity;
+                // Calculations
+            }
         })
     }
 
