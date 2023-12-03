@@ -86,9 +86,9 @@
 
 <div class="subtopic">health: number</div>
 <div class="label" style="background-color: #344045">description: Once the entity's health reaches or goes below 0, all event listeners added through Entity#onDeath are invoked.</div>
-
 <div class="label">Min: 0</div>
 <div class="label">Max: inf</div>
+
 <div class="subtopic">rotation: number</div>
 <div class="label" style="background-color: #344045">description: The rotation to be applied when rendering the entity</div>
 
@@ -118,47 +118,60 @@
 
 <div class="topic">━━ Instance Methods ━━</div>
 <div class="subtopic">setPixels(width: number, height: number, pixArr: Array{Util.Color}) -> void</div>
-
 <div class="subtopic">setSprite(width: number, height: number, path: string) -> void</div>
-
-
 <div class="subtopic">destroy() -> void</div>
-
-
 <div class="subtopic">onDeath(c: function) -> void</div>
-
-
 <div class="subtopic">removeListener(c: function) -> void</div>
-
-
 <div class="subtopic">checkCollision(e: Entity) -> boolean</div>
-
-
 <div class="subtopic">applyVelocity(xa: number, ya: number, timelimit: number?) -> void</div>
-
-
 <div class="subtopic">moveTo(x: number, y: number) -> void</div>
-
-
 <div class="subtopic">update() -> void</div>
-
-
 <div class="subtopic">render() -> void</div>
 
 
 ### Light
 <div class="class">LightSource(map: Main.GameMap, x: number?, y: number?, game: Main.Game)</div>
-    - Properties:
-        - map: Main.GameMap
-        - emit: boolean
-        - radius: number
-        - direction: number
-        - distance: number
-        - ignoreSolids: boolean
-        - intensity: number
-        - color: Util.Color
-        - position: Util.Vector2i
-        - game: Main.Game
+<div class="topic">━━ Properties ━━</div>
+<div class="subtopic">map: Main.GameMap</div>
+<div class="label">READ-ONLY</div>
+<div class="subtopic">emit: boolean</div>
+<div class="label" style="background-color: #344045">description: Should the light emit light?</div>
+
+<div class="subtopic">radius: number</div>
+<div class="label" style="background-color: #344045">description: The radius of the radial light.</div>
+<div class="label">Min: 0</div>
+<div class="label">Min: 360</div>
+
+<div class="subtopic">direction: number</div>
+<div class="label" style="background-color: #344045">description: The direction the light should point. Has no effect at 360 degree radius.</div>
+<div class="label">Min: 0</div>
+<div class="label">Min: 360</div>
+
+
+<div class="subtopic">distance: number</div>
+<div class="label" style="background-color: #344045">description: The distance or length, in (px), that the light will have an effect.</div>
+<div class="label">Min: 0</div>
+<div class="label">Max: inf</div>
+
+<div class="subtopic">ignoreSolids: boolean</div>
+<div class="label" style="background-color: #344045">description: Can the light pass through solid entities?</div>
+
+<div class="subtopic">intensity: number</div>
+<div class="label" style="background-color: #344045">description: How bright does the light start?</div>
+<div class="label">Min: 0</div>
+<div class="label">Max: 100</div>
+
+<!-- Stopped here for tonight -->
+
+<div class="subtopic">color: Util.Color</div>
+<div class="label" style="background-color: #344045">description: The position of the entity. Also stores the velocity of the entity.</div>
+<div class="subtopic">position: Util.Vector2i</div>
+<div class="label" style="background-color: #344045">description: The position of the entity. Also stores the velocity of the entity.</div>
+<div class="subtopic">game: Main.Game</div>
+<div class="label">READ-ONLY</div>
+<div class="label" style="background-color: #344045">description: The position of the entity. Also stores the velocity of the entity.</div>
+
+
     - Methods:
         - getLightmap() -> Dictionary {lightmap: Main.GameMap, points: Array<Array<Util.Point>>, solids: boolean}
 
