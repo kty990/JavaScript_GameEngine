@@ -77,7 +77,7 @@ class Game {
     update() {
         this.entities.forEach(e => e.update());
         //function applyLightArrays(pixels, xArray, yArray, lightArrays) {
-        util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x), this.map.lighting.map(L => L.position.y), this.map.lighting.generateMap(this.cameraPosition.x, this.cameraPosition.y))
+        this.pixels = util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x), this.map.lighting.map(L => L.position.y), this.map.lighting.generateMap(this.cameraPosition.x, this.cameraPosition.y))
     }
 
     addEntity(e) {
