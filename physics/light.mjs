@@ -87,6 +87,8 @@ class Lighting {
                 let boundary = data.boundary;
                 let entities = data.entity;
                 // Calculations
+
+                tmp[dy][dx] *= smlMap[y][x]; // Something like this. Cant confirm this is correct
             }
         })
         return tmp;
