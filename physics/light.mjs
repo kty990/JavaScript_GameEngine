@@ -94,7 +94,7 @@ class Lighting {
                     let dy = light.position.y + y;
                     for (let x = 0; x < smlMap.lightmap[0].length; x++) {
                         let dx = light.position.x + x;
-                        tmp[dy][dx] *= smlMap[y][x]; // Something like this. Cant confirm this is correct
+                        tmp[dy][dx] = tmp[dy][dx].multiply(smlMap[y][x]).max(255).min(0);
                     }
                 }
 

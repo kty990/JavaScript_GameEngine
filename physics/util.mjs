@@ -52,6 +52,41 @@ class Color {
     deconstruct() {
         return [this.r, this.g, this.b, this.alpha];
     }
+
+    multiply(num) {
+        this.r *= num;
+        this.g *= num;
+        this.b *= num;
+    }
+
+    max(num) {
+        let div = 1;
+        if (this.r > this.g && this.r > this.b) {
+            // Red is largest
+            if (this.r <= num) return this;
+            div = num / this.r;
+        } else if (this.g > this.r && this.g > this.b) {
+            // Green is largest
+            if (this.g <= num) return this;
+            div = num / this.r;
+        } else {
+            // Blue is largest
+            if (this.b <= num) return this;
+            div = num / this.r;
+
+        }
+        this.r *= div;
+        this.g *= div;
+        this.b *= div;
+        return this;
+    }
+
+    min(num) {
+        this.r = Math.max(num, this.r);
+        this.g = Math.max(num, this.g);
+        this.b = Math.max(num, this.b);
+        return this;
+    }
 }
 
 class HexColor extends Color {
