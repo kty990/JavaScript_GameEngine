@@ -160,10 +160,7 @@ function generateLightArray(radiusDegrees, height, direction) {
 
         for (let x = 0; x < lineWidth; x++) {
             // Normalize the light level between 0 and 1 based on x position in the row
-            const lightLevel = x / lineWidth;
-
-            // Adjust x position based on the direction
-            const adjustedX = adjustXPosition(x, lineWidth, direction);
+            const lightLevel = adjustXPosition(x, lineWidth, direction) / lineWidth;
 
             row.push(lightLevel);
         }

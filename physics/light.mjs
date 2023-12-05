@@ -25,7 +25,7 @@ class LightSource {
 
 
     getLightmap() {
-        if (!this.emit) return;
+        if (!this.emit) return { lightmap: null, points: null, solids: null };
         let map = util.generateLightArray(this.radius, this.height, this.direction), solidPixels;
         if (!this.ignoreSolids) {
             solidPixels = this.getSolidObstacles();
@@ -79,8 +79,10 @@ class Lighting {
             tmp.push(t);
         }
         let lights = this.getLightsInRadiusOfPos(x, y, this.game.canvas.width * this.game.zoom);
-        lights.forEach((light, i, arr) => {
+        for (let i = 0; i < lights.length; i++) {
+            const light = lights[i];
             let smlMap = light.getLightmap();
+            if (smlMap.lightmap == null) return;
             if (!smlMap.solids) {
                 // If not ignore solids
                 let data = smlMap.points;
@@ -88,9 +90,16 @@ class Lighting {
                 let entities = data.entity;
                 // Calculations
 
-                tmp[dy][dx] *= smlMap[y][x]; // Something like this. Cant confirm this is correct
+                for (let y = 0; y < smlMap.lightmap.length; y++) {
+                    let dy = light.position.y + y;
+                    for (let x = 0; x < smlMap.lightmap[0].length; x++) {
+                        let dx = light.position.x + x;
+                        tmp[dy][dx] *= smlMap[y][x]; // Something like this. Cant confirm this is correct
+                    }
+                }
+
             }
-        })
+        }
         return tmp;
     }
 

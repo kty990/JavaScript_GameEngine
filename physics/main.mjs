@@ -95,15 +95,15 @@ class GameMap {
      * 
      * @param {number | undefined} dx 
      * @param {number | undefined} dy 
-     * @param {string | undefined} MapBoundaryFilepath 
+     * @param {Array<string> | undefined} MapBoundaryFilepath 
      * @param {string | undefined} filepath 
      * @param {Array | undefined} pixels 
      * 
      * The map boundary is a true/false for whether there are pixels in a given location.
      */
-    constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepath = "", filepath = "", pixels = []) {
-        assert(filepath == "" && pixels == [], `GameMap requires either a filepath or pixel array. No map data provided`);
-        assert(MapBoundaryFilepath instanceof string && MapBoundaryFilepath.length > 0, 'Requires map boundary file.');
+    constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepaths = [], filepath = "", pixels = []) {
+        assert(!(filepath == "" && pixels == []), `GameMap requires either a filepath or pixel array. No map data provided`);
+        assert(MapBoundaryFilepaths instanceof Array && MapBoundaryFilepaths.length > 0, 'Requires map boundary file(s).');
         if (filepath) {
             this.filepath = filepath;
             this.dx = dx;
@@ -148,7 +148,9 @@ class Player extends entity.Entity {
                 this.controller = new controls.Keyboard();
                 break;
             case ControlTypes.Touch:
+            case ControlTypes.Mouse:
                 this.controller = new controls.Mouse();
+                break;
             default:
                 throw 'Invalid control type.\n\tValid types:\n\t\t- Keyboard\n\t\tTouch\t(Mouse)';
         }
