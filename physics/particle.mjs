@@ -21,9 +21,16 @@ class Particle extends entity.Entity {
      * @param {util.Vector2i} lastPos 
      * @param {number} speed Between 0 - 1 
      */
-    tween(pos0, pos1, lastPos, speed) {
-        let slope = (pos0.y / pos1.y) / (pos0.x / pos1.x);
-        return new util.Vector2i(); // finish this
+    tween(pos0, pos1, speed) {
+        let m = (pos0.y / pos1.y) / (pos0.x / pos1.x);
+        let d = speed;
+        // Calculate new coordinates
+        const newX = x + d / Math.sqrt(1 + m * m);
+        const newY = y + m * (d / Math.sqrt(1 + m * m));
+
+        // Now, (newX, newY) represents the point moved along the slope by distance 'd'
+
+        return new util.Vector2i(newX,newY); // finish this
     }
 
     update() {
