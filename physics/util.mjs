@@ -45,6 +45,29 @@ class Vector2i {
     }
 }
 
+class Event {
+    constructor() {
+        this.hooks = {};
+    }
+
+    on(name, callback) {
+        if (!Array.from(Object.keys(this.hooks)).includes(name)) {
+            this.hooks[name] = [];
+        }
+        this.hooks[name].push(callback);
+    }
+
+    off(name, callback) {
+        if (Array.from(Object.keys(this.hooks)).includes(name)) {
+            if (this.hooks[name].includes(callback)) {
+                this.hooks[name].splice(this.hooks[name].indexOf(callback), 1);
+            }
+        }
+    }
+
+
+}
+
 class Color {
     constructor(r, g, b, a = 1) {
         this.r = r;
@@ -263,4 +286,4 @@ function applyLightArrays(pixels, xArray, yArray, lightArrays) {
     return pixels;
 }
 
-export { Point, Path, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, generateLightArray, applyLightArrays }
+export { Point, Path, Event, Vector2i, Color, HexColor, assert, loadPixelsFromImg, hexToRgba, toPixelArray, generateLightArray, applyLightArrays }
