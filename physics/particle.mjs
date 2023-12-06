@@ -18,8 +18,7 @@ class Particle extends entity.Entity {
     /**
      * 
      * @param {util.Vector2i} pos0 
-     * @param {util.Vector2i} pos1 
-     * @param {util.Vector2i} lastPos 
+     * @param {util.Vector2i} pos1  
      * @param {number} speed Between 0 - 1 
      */
     tween(pos0, pos1, speed) {
