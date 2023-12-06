@@ -38,6 +38,11 @@ class Vector2i {
         this.xa = xa;
         this.ya = ya;
     }
+
+    min(x, y) {
+        this.x = Math.min(x, this.x);
+        this.y = Math.min(y, this.y);
+    }
 }
 
 class Color {

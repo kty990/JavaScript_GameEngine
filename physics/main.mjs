@@ -35,7 +35,7 @@ class Game {
         this.map = null;
         this.pixels = [];
         this.entities = [];
-        this.cameraPosition = new util.Point(0, 0);
+        this.cameraPosition = new util.Vector2i(0, 0);
 
         this.init();
     }
@@ -62,6 +62,14 @@ class Game {
         this.map = map;
     }
 
+    update() {
+        this.entities.forEach(e => e.update());
+        this.cameraPosition.x += this.cameraPosition.xa;
+        this.cameraPosition.y += this.cameraPosition.ya;
+        this.cameraPosition.min(0, 0);
+        this.pixels = util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x), this.map.lighting.map(L => L.position.y), this.map.lighting.generateMap(this.cameraPosition.x, this.cameraPosition.y))
+    }
+
     /**
      * Wipes the screen and renders all entities to the screen
      */
@@ -72,12 +80,6 @@ class Game {
             this.map.render(this);
         }
         this.ctx.putImageData(this.pixels.map(color => color.deconstruct()), 0, 0);
-    }
-
-    update() {
-        this.entities.forEach(e => e.update());
-        //function applyLightArrays(pixels, xArray, yArray, lightArrays) {
-        this.pixels = util.applyLightArrays(this.pixels, this.map.lighting.map(L => L.position.x), this.map.lighting.map(L => L.position.y), this.map.lighting.generateMap(this.cameraPosition.x, this.cameraPosition.y))
     }
 
     addEntity(e) {

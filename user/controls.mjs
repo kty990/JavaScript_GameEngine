@@ -3,12 +3,20 @@ import * as util from '../physics/util';
 class Keyboard {
     constructor() {
         this.press = {};
+        this.release = {};
         this.enabled = true;
 
         document.addEventListener('keydown', function (event) {
             if (!this.enabled) return;
             try {
                 this.press[event.key.toUpperCase()].forEach(cb => cb(event));
+            } catch (e) { }
+        });
+
+        document.addEventListener('keyup', function (event) {
+            if (!this.enabled) return;
+            try {
+                this.release[event.key.toUpperCase()].forEach(cb => cb(event));
             } catch (e) { }
         });
     }
@@ -18,6 +26,13 @@ class Keyboard {
             this.press[btn.toUpperCase()] = [];
         }
         this.press[btn.toUpperCase()].push(callback);
+    }
+
+    onrelease(btn, callback) {
+        if (!Array.from(Object.keys(this.release)).includes(btn.toUpperCase())) {
+            this.release[btn.toUpperCase()] = [];
+        }
+        this.release[btn.toUpperCase()].push(callback);
     }
 }
 
