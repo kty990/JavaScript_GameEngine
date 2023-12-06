@@ -43,6 +43,23 @@ class Vector2i {
         this.x = Math.min(x, this.x);
         this.y = Math.min(y, this.y);
     }
+    
+    gt(v2i, direction) {
+        // Convert degrees to radians
+        const angleInRadians = (direction * Math.PI) / 180;
+
+        // Calculate unit vector components for the specified direction
+        const directionVector = {
+            x: Math.cos(angleInRadians),
+            y: Math.sin(angleInRadians)
+        };
+    
+        // Calculate dot products to compare vectors along the specified direction
+        const dotProductThis = this.position.x * directionVector.x + this.position.y * directionVector.y;
+        const dotProductV2i = v2i.x * directionVector.x + v2i.y * directionVector.y;
+    
+        return dotProductV2i > dotProductThis;
+    }
 }
 
 class Event {
