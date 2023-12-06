@@ -12,6 +12,7 @@ class Particle extends entity.Entity {
         this.solid = false;
         this.color = color;
         this.path = null;
+        this.speed = 0.5; 
     }
 
     /**
@@ -36,7 +37,15 @@ class Particle extends entity.Entity {
     update() {
         if (this.path) {
             // Update position along the path
-            this.position
+            if (this.i >= this.path.length) {
+                return;
+            }
+            let pos = this.tween(this.path[this.i],this.path[this.i+1],this.speed);
+            
+            this.position = pos;
+            if (pos.gt(this.path[i+1]) {
+                this.i++;
+            }
         }
     }
 
