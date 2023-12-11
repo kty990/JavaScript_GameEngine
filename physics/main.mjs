@@ -73,14 +73,43 @@ class Game {
     /**
      * Wipes the screen and renders all entities to the screen
      */
-    render() {
+    /*render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.entities.forEach(e => e.render());
         if (this.map) {
             this.map.render(this);
         }
         this.ctx.putImageData(this.pixels.map(color => color.deconstruct()), 0, 0);
+    }*/
+
+    render() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.entities.forEach(e => e.render());
+        if (this.map) {
+            this.map.render(); // Simply call the render method without passing 'this'
+        }
+    
+        // Create ImageData object
+        const imageData = new ImageData(this.canvas.width, this.canvas.height);
+    
+        // Loop through the pixels array and set data in ImageData
+        for (let y = 0; y < this.pixels.length; y++) {
+            for (let x = 0; x < this.pixels[0].length; x++) {
+                const index = (y * this.canvas.width + x) * 4; // Calculate index based on x, y
+                const color = this.pixels[y][x].deconstruct(); // Assuming this method returns an array [r, g, b, a]
+    
+                // Set RGBA values in ImageData
+                imageData.data[index] = color[0];
+                imageData.data[index + 1] = color[1];
+                imageData.data[index + 2] = color[2];
+                imageData.data[index + 3] = color[3];
+            }
+        }
+    
+        // Put the ImageData onto the canvas
+        this.ctx.putImageData(imageData, 0, 0);
     }
+
 
     addEntity(e) {
         this.entities.push(e);
