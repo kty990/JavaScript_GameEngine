@@ -133,9 +133,6 @@ class GameMap {
      * 
      * The map boundary is a true/false for whether there are pixels in a given location.
      */
-
-
-class GameMap {
     constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepaths = [], filepath = "", pixels = [], width = 1920, height = 1080) {
         this.game = GAME;
         this.dx = dx;
