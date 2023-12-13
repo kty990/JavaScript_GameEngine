@@ -4,11 +4,12 @@
 */
 
 
-import * as light from './light';
-import * as particle from './particle';
-import * as entity from './entity';
-import { assert, Vector2i, loadPixelsFromImg, toPixelArray } from './util'
-import * as controls from '../user/controls';
+import * as light from './light.mjs';
+import * as particle from './particle.mjs';
+import * as entity from './entity.mjs';
+import { assert, Vector2i, loadPixelsFromImg, toPixelArray } from './util.mjs';
+import * as util from './util.mjs';
+import * as controls from '../user/controls.mjs';
 
 const ControlTypes = {
     Keyboard: 0,
@@ -132,26 +133,34 @@ class GameMap {
      * 
      * The map boundary is a true/false for whether there are pixels in a given location.
      */
-    constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepaths = [], filepath = "", pixels = []) {
+
+
+class GameMap {
+    constructor(GAME, dx = 0, dy = 0, MapBoundaryFilepaths = [], filepath = "", pixels = [], width = 1920, height = 1080) {
+        this.game = GAME;
+        this.dx = dx;
+        this.dy = dy;
+        this.width = width;
+        this.height = height;
+        this.zoom = 1;
+
+        this.init(filepath, pixels, MapBoundaryFilepaths);
+    }
+
+    async init(filepath, pixels, MapBoundaryFilepaths) {
         assert(!(filepath == "" && pixels == []), `GameMap requires either a filepath or pixel array. No map data provided`);
         assert(MapBoundaryFilepaths instanceof Array && MapBoundaryFilepaths.length > 0, 'Requires map boundary file(s).');
+
         if (filepath) {
             this.filepath = filepath;
-            this.dx = dx;
-            this.dy = dy;
-
-            this.pixels = toPixelArray(loadPixelsFromImg(filepath));
-
+            this.pixels = toPixelArray(this.width, await loadPixelsFromImg(filepath));
+        } else if (pixels.length > 0) {
+            this.pixels = toPixelArray(this.width, pixels);
         }
-        this.game = GAME;
-        this.boundary = toPixelArray(loadPixelsFromImg(MapBoundaryFilepath));
-        if (pixels instanceof Array) {
-            if (pixels.length > 0) {
-                this.pixels = toPixelArray(pixels);
-            }
-        }
-        this.lighting = new light.Lighting(this);
-        this.zoom = 1;
+
+        this.boundary = toPixelArray(this.width, await loadPixelsFromImg(MapBoundaryFilepaths[0])); // Assuming MapBoundaryFilepaths is an array
+        this.lighting = new light.Lighting(c);
+
         this.game.canvas.width = `${1920 * this.zoom}px`;
         this.game.canvas.height = `${1080 * this.zoom}px`;
     }
